@@ -1,11 +1,14 @@
+from fastapi import HTTPException
 
 
+from .hash_password import hash_password, compare_passwords
 
 from app.application.services.users import UsersService
-from .hash_password import hash_password, compare_passwords
 from app.application.dto.users import UserDTO
 
+from app.adapters.redisDb.redis_gateway import SessionHandler
 
+session_handler = SessionHandler()
 class AuthService:
     def __init__(
         self,
@@ -19,5 +22,25 @@ class AuthService:
         res = self.user_service.create_user(user)
         return res
 
-    def login_user(self, name: str, password: str) -> None:
-        pass
+    async def login_user(self, user: UserDTO) -> None:
+        user_in_db = await self.user_service.get_user_by_name(user.name)
+        
+        res = compare_passwords(user.hashed_password, user_in_db.hashed_password.encode())
+        
+        if res:
+            # Добавить получение сессии из куки
+            session_id = await session_handler.get_session(user_in_db.name)
+            print(session_id)
+            if session_id:
+                await session_handler.delete_session(session_id)
+            
+            session_id = await session_handler.create_session(user_in_db.name)
+                
+            
+            
+            return {"session_id": session_id}
+        
+        raise HTTPException(status_code=401, detail="Invalid credentials")
+    
+    async def get_session(self, session_id: str) -> str:
+        return await session_handler.get_session(session_id)
