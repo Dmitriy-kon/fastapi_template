@@ -14,4 +14,5 @@ class SUserIn(BaseModel):
         return UserDTO(
             name=self.name, 
             hashed_password=self.password,
-            salt=self.password)
+            # salt="123"
+           )

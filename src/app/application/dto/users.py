@@ -6,7 +6,7 @@ from dataclasses import dataclass, asdict, field
 class UserDTO:
     name: str
     hashed_password: str
-    salt: str 
+    # salt: str | None
     id: int | None = field(default=None)
     created_at: datetime | None = field(default=None)
     updated_at: datetime | None = field(default=None)

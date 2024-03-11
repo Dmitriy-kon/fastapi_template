@@ -5,7 +5,6 @@ from fastapi import APIRouter, Depends
 from app.application.schemas.users import SUser, SUserIn
 from app.api.depends_stub import Stub
 
-from app.application.dto.users import UserDTO
 
 
 from app.application.services.users import UsersService
@@ -34,7 +33,7 @@ async def get_user_by_id(
 async def create_user(
     user: SUserIn,
     users_service: Annotated[UsersService, Depends(Stub(UsersService))],
-) -> SUser:
+):
     user = user.to_dto()
     res = await users_service.create_user(user)
     return res
