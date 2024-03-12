@@ -8,12 +8,13 @@ from app.api.depends_stub import Stub
 
 
 from app.application.services.users import UsersService
+from app.application.auth.auth_session import auth_required_from_session
 
 
 users_router = APIRouter()
 
 
-@users_router.get("/")
+@users_router.get("/", dependencies=[Depends(auth_required_from_session)])
 async def get_all_users(
     users_service: Annotated[UsersService, Depends(Stub(UsersService))],
 ) -> list[SUser]:

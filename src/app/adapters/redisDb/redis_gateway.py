@@ -8,7 +8,6 @@ import redis.asyncio as aioredis
 exp_time = os.getenv("EXPIRE_TIME")
 exp_time = 4000
 
-
 class SessionHandler:
     def __init__(self) -> None:
         self.client = aioredis.from_url(
@@ -26,3 +25,5 @@ class SessionHandler:
 
     async def delete_session(self, session_id: str):
         await self.client.delete(session_id)
+
+session_handler = SessionHandler()
