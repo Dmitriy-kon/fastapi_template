@@ -6,14 +6,17 @@ from .hash_password import hash_password, compare_passwords
 from app.application.services.users import UsersService
 from app.application.dto.users import UserDTO
 
-from app.adapters.redisDb.redis_gateway import session_handler
+from app.adapters.redisDb.redis_gateway import SessionRedisHandler
 
 
 
 
 class AuthService:
-    def __init__(self, user_service: UsersService) -> None:
+    def __init__(self, 
+                 user_service: UsersService,
+                 session_handler: SessionRedisHandler) -> None:
         self.user_service = user_service
+        self.session_handler = session_handler
 
     def register_user(self, user: UserDTO) -> UserDTO:
         hashed_password = hash_password(user.hashed_password)
@@ -39,14 +42,14 @@ class AuthService:
             print(f"{session_id=}")
             
             if session_id:
-                session_res = await session_handler.get_session(session_id)
+                session_res = await self.session_handler.get_session(session_id)
                 
             print(f"{session_res=}")
             
             if session_res:
-                await session_handler.delete_session(session_id)
+                await self.session_handler.delete_session(session_id)
 
-            session_id = await session_handler.create_session(user_in_db.name)
+            session_id = await self.session_handler.create_session(user_in_db.name)
 
             return session_id
 
@@ -57,5 +60,5 @@ class AuthService:
         )
 
     async def get_session(self, session_id: str) -> str:
-        return await session_handler.get_session(session_id)
+        return await self.session_handler.get_session(session_id)
 

@@ -13,7 +13,9 @@ from app.application.repositories.users_rep import UsersRepository
 
 class UsersService:
     def __init__(
-        self, repo: Annotated[UsersRepository, Depends(Stub(UsersRepository))]
+        self, 
+        repo: UsersRepository
+        
     ) -> None:
         self.repo = repo
 

@@ -8,12 +8,15 @@ from sqlalchemy import select, insert
 
 from app.adapters.sqlalchemyDb.models import User
 from app.api.depends_stub import Stub
+
 from app.application.dto.users import UserDTO
 
 
 class UsersRepository:
     def __init__(
-        self, session: Annotated[AsyncSession, Depends(Stub(AsyncSession))]
+        self,
+        session: AsyncSession
+        
     ) -> None:
         self.session = session
         self.model = User

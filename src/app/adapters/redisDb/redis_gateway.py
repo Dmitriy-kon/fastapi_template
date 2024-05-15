@@ -10,7 +10,7 @@ redis_pool = redis.ConnectionPool.from_url(
     "redis://redisdb", encoding="utf8", decode_responses=True
 )
 
-class SessionHandler:
+class SessionRedisHandler:
     def __init__(self) -> None:
         self.client = redis.Redis(connection_pool=redis_pool)
 
@@ -26,4 +26,4 @@ class SessionHandler:
     async def delete_session(self, session_id: str):
         await self.client.delete(session_id)
 
-session_handler = SessionHandler()
+session_handler = SessionRedisHandler()
