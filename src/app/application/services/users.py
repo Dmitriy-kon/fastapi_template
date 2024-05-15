@@ -1,15 +1,20 @@
+from typing import Annotated
+
+
 from sqlalchemy.exc import NoResultFound, IntegrityError
 
-from fastapi import HTTPException
+from fastapi import Depends, HTTPException
 
 
-
+from app.api.depends_stub import Stub
 from app.application.dto.users import UserDTO
 from app.application.repositories.users_rep import UsersRepository
 
 
 class UsersService:
-    def __init__(self, repo: UsersRepository) -> None:
+    def __init__(
+        self, repo: Annotated[UsersRepository, Depends(Stub(UsersRepository))]
+    ) -> None:
         self.repo = repo
 
     async def get_all_users(self) -> list[UserDTO]:
@@ -33,4 +38,6 @@ class UsersService:
             await self.repo.commit()
             return res
         except IntegrityError:
-            raise HTTPException(status_code=409, detail="User with this name already exists")
+            raise HTTPException(
+                status_code=409, detail="User with this name already exists"
+            )

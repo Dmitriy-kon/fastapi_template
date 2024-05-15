@@ -47,5 +47,5 @@ async def login_httpbasic(
     user = UserDTO(name=credentials.username, hashed_password=credentials.password)
     res = await auth_service.login_user(user, request)
     
-    response.set_cookie("session_id", str(res))
+    response.set_cookie("session_id", res)
     return {"message": "all good", "headers": response.headers}

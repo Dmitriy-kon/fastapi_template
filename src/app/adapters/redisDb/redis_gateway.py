@@ -1,18 +1,18 @@
 import secrets
 import os
 
-import redis.asyncio as aioredis
+import redis.asyncio as redis
 
 #
 # client = aioredis.from_url("redis://localhost:6379", encoding="utf8", decode_responses=True)
-exp_time = os.getenv("EXPIRE_TIME")
-exp_time = 4000
+exp_time = os.getenv("EXPIRE_TIME") or 4000
+redis_pool = redis.ConnectionPool.from_url(
+    "redis://redisdb", encoding="utf8", decode_responses=True
+)
 
 class SessionHandler:
     def __init__(self) -> None:
-        self.client = aioredis.from_url(
-            "redis://redisdb", encoding="utf8", decode_responses=True
-        )
+        self.client = redis.Redis(connection_pool=redis_pool)
 
     async def create_session(self, user_name: str):
         session_id = secrets.token_hex(16)

@@ -35,6 +35,7 @@ class AuthService:
         if res:
             session_id = request.cookies.get("session_id")
             session_res = None
+            
             print(f"{session_id=}")
             
             if session_id:
