@@ -1,7 +1,7 @@
 from fastapi import HTTPException, Request
 
 
-from .hash_password import hash_password, compare_passwords
+from app.application.auth.hash_password import compare_passwords, hash_password
 
 from app.application.services.users import UsersService
 from app.application.dto.users import UserDTO
@@ -20,7 +20,7 @@ class AuthService:
 
     def register_user(self, user: UserDTO) -> UserDTO:
         hashed_password = hash_password(user.hashed_password)
-        user.hashed_password = hashed_password.decode()
+        user.hashed_password = hashed_password
 
         res = self.user_service.create_user(user)
         return res
@@ -39,12 +39,10 @@ class AuthService:
             session_id = request.cookies.get("session_id")
             session_res = None
             
-            print(f"{session_id=}")
             
             if session_id:
                 session_res = await self.session_handler.get_session(session_id)
                 
-            print(f"{session_res=}")
             
             if session_res:
                 await self.session_handler.delete_session(session_id)

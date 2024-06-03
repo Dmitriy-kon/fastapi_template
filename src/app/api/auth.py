@@ -8,6 +8,7 @@ from app.application.auth.auth_service import AuthService
 
 from app.application.schemas.users import SUserIn
 from app.application.dto.users import UserDTO
+
 from app.application.auth.auth_session import security
 
 auth_router = APIRouter()

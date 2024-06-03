@@ -42,6 +42,8 @@ def get_auth_service(
 def get_session_redis_handler():
     return SessionRedisHandler()
 
+# def get_hasher():
+#     return Hasher()
 
 def init_dependencies(app: FastAPI) -> None:
     async_session = async_sessionmaker(async_engine, expire_on_commit=False)
@@ -55,4 +57,5 @@ def init_dependencies(app: FastAPI) -> None:
     app.dependency_overrides[UsersRepository] = get_user_repository
     app.dependency_overrides[AuthService] = get_auth_service
     app.dependency_overrides[SessionRedisHandler] = get_session_redis_handler
+    # app.dependency_overrides[Hasher] = get_hasher
     
